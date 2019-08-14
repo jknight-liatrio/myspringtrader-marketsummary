@@ -9,7 +9,7 @@ RUN gradle classes || echo "ok"
 
 # Copy in the src and build
 COPY src /app/src
-RUN gradle build
+RUN gradle build --debug
 
 FROM openjdk:8-jre-alpine
 WORKDIR /app
