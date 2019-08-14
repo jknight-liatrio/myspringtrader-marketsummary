@@ -17,3 +17,24 @@ deploy:
           canary.enabled: true
         setValueTemplates:
           istioDomain: "{{.ISTIO_DOMAIN}}"
+
+profiles:
+  - name: local
+    build:
+      artifacts:
+        - image: 'artifactory.toolchain.lead.sandbox.liatr.io/docker-registry/joe-lab/marketsummary'
+          context: .
+      tagPolicy:
+        envTemplate:
+          template: '{{.IMAGE_NAME}}'
+    deploy:
+      helm:
+        releases:
+          - name: marketsummary
+            wait: true
+            recreatePods: true
+            chartPath: ./charts/marketsummary
+            setValueTemplates:
+              istioDomain: 'joe-lab-staging.lead.sandbox.liatr.io'
+              image: '{{.IMAGE_NAME}}:latest'
+
