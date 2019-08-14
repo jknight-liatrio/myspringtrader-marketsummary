@@ -10,7 +10,7 @@ pipeline {
         notifyPipelineStart()
         notifyStageStart()
         container('skaffold') {
-          sh "skaffold build --file-output=image.json"
+          sh "time skaffold build --file-output=image.json"
           stash includes: 'image.json', name: 'build'
         }
       }
@@ -29,7 +29,7 @@ pipeline {
         label "lead-toolchain-skaffold"
       }
       when {
-          branch 'master'
+          branch 'testing'
       }
       environment {
         TILLER_NAMESPACE = "${env.stagingNamespace}"
@@ -39,7 +39,7 @@ pipeline {
         notifyStageStart()
         container('skaffold') {
           unstash 'build'
-          sh "skaffold deploy -a image.json -n ${TILLER_NAMESPACE}"
+          sh "time skaffold deploy -a image.json -n ${TILLER_NAMESPACE}"
         }
       }
       post {
@@ -55,7 +55,7 @@ pipeline {
     stage ('Manual Ready Check') {
       agent none
       when {
-        branch 'master'
+        branch 'testing'
       }
       options {
         timeout(time: 30, unit: 'MINUTES')
@@ -73,7 +73,7 @@ pipeline {
         label "lead-toolchain-skaffold"
       }
       when {
-          branch 'master'
+          branch 'testing'
       }
       environment {
         TILLER_NAMESPACE = "${env.productionNamespace}"
