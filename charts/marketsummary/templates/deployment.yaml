@@ -19,6 +19,7 @@ spec:
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image }}
+        imagePullPolicy: Always
         env:
         - name: OPENTRACING_JAEGER_SERVICE_NAME
           value: marketsummary.{{ .Release.Namespace }}
